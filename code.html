@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, My Love!</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to bottom, #fff1f2, #f9a8d4);
+      min-height: 100vh;
+      font-family: 'Georgia', serif;
+      overflow-x: hidden;
+    }
+    .page {
+      display: none;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    .page.active {
+      display: flex;
+      opacity: 1;
+    }
+    .gallery-img {
+      transition: transform 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease;
+      cursor: pointer;
+      border: 4px solid rgb(216, 38, 142);
+      opacity: 0;
+      animation: bounceIn 1s ease forwards;
+      animation-delay: calc(var(--i) * 0.4s);
+    }
+    .gallery-img:hover {
+      transform: scale(1.15) rotate(5deg);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      filter: brightness(1.1);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal img {
+      max-width: 95%;
+      max-height: 80%;
+      border: 6px solid #fff;
+      border-radius: 12px;
+      animation: zoomIn 0.6s ease-in;
+    }
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      color: #fff;
+      font-size: 2.5rem;
+      cursor: pointer;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    .close:hover {
+      color: #f43f5e;
+      transform: scale(1.2) rotate(180deg);
+    }
+    .heart {
+      animation: heartbeat 1.8s ease-in-out infinite;
+    }
+    .typewriter {
+      overflow: hidden;
+      border-right: 0.15em solid #f472b6;
+      white-space: nowrap;
+      animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+      opacity: 0;
+      animation-delay: 0.5s;
+      animation-fill-mode: forwards;
+    }
+    .transparent-message {
+      font-family: 'Dancing Script', cursive;
+      color: rgba(212, 67, 67, 0.7);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+      animation: fadeInUp 2s ease forwards;
+      animation-delay: 1.5s;
+      opacity: 0;
+    }
+    @keyframes typing {
+      from { width: 0; opacity: 1; }
+      to { width: 100%; opacity: 1; }
+    }
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #f472b6; }
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(60px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.3) rotate(-10deg); }
+      50% { opacity: 0.7; transform: scale(1.2) rotate(3deg); }
+      70% { transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.4); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-120px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .text-glow {
+      text-shadow: 0 0 12px #fff, 0 0 24px #f472b6, 0 0 36px #f472b6;
+      animation: slideIn 1.2s ease-out;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      animation: fadeInUp 1.2s ease forwards;
+      animation-delay: 1s;
+    }
+    .btn {
+      transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+      touch-action: manipulation;
+    }
+    .btn:hover {
+      transform: scale(1.15);
+      background-color: #db2777;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 2.5rem; /* Smaller title for mobile */
+      }
+      h2 {
+        font-size: 2rem;
+      }
+      .typewriter, .text-xl {
+        font-size: 1.1rem;
+        max-width: 90%;
+      }
+      .transparent-message {
+        font-size: 1.25rem;
+        line-height: 1.5;
+        padding: 0 1rem;
+      }
+      .gallery-img {
+        height: 16rem; /* Adjust photo height for mobile */
+      }
+      .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+      }
+      .modal img {
+        max-width: 90%;
+        max-height: 70%;
+      }
+      .close {
+        font-size: 2rem;
+        top: 10px;
+        right: 15px;
+      }
+      .card {
+        padding: 1.5rem;
+        margin: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center text-center">
+  <!-- Page 1: Welcome Page -->
+  <div id="page1" class="page flex-col items-center justify-center min-h-screen active px-4">
+    <h1 class="text-5xl md:text-7xl font-bold text-rose-700 mb-6 heart text-glow">Happy Birthday, Meri Cutie Janu</h1>
+    <p class="text-xl md:text-2xl text-gray-900 mb-10 max-w-2xl mx-auto">
+      Ya sab kuch sirf tumhare liye hai, my Princess! Mere dil ki Queen ke liye 💖
+    </p>
+    <button id="nextPage" class="btn bg-rose-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg">
+      Chota sa gift hai bas!
+    </button>
+  </div>
+
+  <!-- Page 2: Photo Gallery and Message -->
+  <div id="page2" class="page flex-col items-center justify-start min-h-screen py-8 px-4">
+    <h2 class="text-4xl md:text-6xl font-bold text-rose-700 mb-6 text-glow">Happy Birthday Khushi Ji!</h2>
+    <p class="text-xl md:text-2xl text-gray-900 mb-10 max-w-2xl mx-auto text-glow">
+      Bas aap hamesha hasti raho aur khush raho! 🎉
+    </p>
+
+    <!-- Photo Gallery -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-3xl mx-auto">
+      <img src="photo_2025-07-12_21-26-41.jpg" alt="Photo 1" class="gallery-img w-full h-72 object-cover rounded-xl" style="--i: 1">
+      <img src="photo_2025-07-12_21-26-54.jpg" alt="Photo 2" class="gallery-img w-full h-72 object-cover rounded-xl" style="--i: 2">
+    </div>
+
+    <!-- Modal for enlarged images -->
+    <div id="modal" class="modal">
+      <span class="close">×</span>
+      <img id="modal-img" src="" alt="Enlarged photo">
+    </div>
+
+    <!-- Transparent Long Message -->
+    <div class="transparent-message text-2xl md:text-3xl max-w-3xl mx-auto mb-12 px-4">
+      My cute Princess, tumse baat karta hu to mujhe bahut acha lagta hai. Tumhari wo pyari si aankhein aur wo beautiful smile, wo call par tumhari sweet mithi si awaaz sunna, tum meri dream girl ho. Ye sab tumhare birthday wale din ke liye hai. Jab se tum gayi ho meri life se, meri khushi bhi chali gayi hai, meri pyari Khushi ji. Apne Yash ji ko maaf kar do please. Bahut sara sorry meri queen ko, aage se nahi karunga pakka. Aur last mein, Happy Birthday to the world's most beautiful girl, my Khushi ji 💞
+    </div>
+  </div>
+
+  <script>
+    // Confetti effect
+    function launchConfetti() {
+      confetti({
+        particleCount: 200,
+        spread: 80,
+        origin: { y: 0.3 },
+        colors: ['#f472b6', '#facc15', '#4ade80', '#60a5fa', '#ffffff'],
+        shapes: ['circle', 'square', 'star', 'heart'],
+        scalar: 1.4,
+        zIndex: 0,
+      });
+    }
+    launchConfetti(); // Initial burst
+    setInterval(launchConfetti, 3500); // Repeat every 3.5 seconds
+
+    // Page transition
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const nextPageBtn = document.getElementById('nextPage');
+
+    nextPageBtn.addEventListener('click', () => {
+      page1.classList.remove('active');
+      setTimeout(() => {
+        page2.classList.add('active');
+        launchConfetti(); // Extra confetti on page transition
+      }, 1200);
+    });
+
+    // Modal functionality
+    const images = document.querySelectorAll('.gallery-img');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+    const closeBtn = document.querySelector('.close');
+
+    images.forEach(img => {
+      img.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
